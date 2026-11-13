@@ -1,0 +1,115 @@
+/* Design tokens: every color, font and layer in the app.
+   Light values sit on :root; the dark theme redefines them. ui/theme.js sets
+   data-theme="light|dark" on <html> from the Light / Dark / Auto setting, and
+   writes the settings-driven variables at the bottom of :root. */
+
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 400; font-display: swap; src: url('../vendor/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 500; font-display: swap; src: url('../vendor/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-weight: 600; font-display: swap; src: url('../vendor/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 400; font-display: swap; src: url('../vendor/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 500; font-display: swap; src: url('../vendor/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-weight: 600; font-display: swap; src: url('../vendor/fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Courier Prime'; font-weight: 400; font-display: swap; src: url('../vendor/fonts/courier-prime-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Courier Prime'; font-weight: 700; font-display: swap; src: url('../vendor/fonts/courier-prime-latin-700-normal.woff2') format('woff2'); }
+
+:root {
+  --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Surfaces and text */
+  --bg: #ECECE8;
+  --chrome: #F6F6F3;
+  --panel: #FFFFFF;
+  --panel2: #F8F8F6;
+  --line: #E1E1DC;
+  --line2: #CFCFC9;
+  --text: #1A1B1E;
+  --text2: #4B4E55;
+  --text3: #62656C;
+  --stage: #D6D5D0;
+  --scrim: rgba(18, 20, 24, .38);
+  --tip-bg: #1C1D21;
+  --tip-fg: #FFFFFF;
+
+  /* Accent */
+  --accent: #2B59C3;
+  --accent-text: #1F47A6;
+  --on-accent: #FFFFFF;
+  --accent-soft: rgba(43, 89, 195, .09);
+  --accent-soft2: rgba(43, 89, 195, .17);
+  --hover: rgba(30, 34, 44, .06);
+  --row-hover: rgba(30, 34, 44, .028);
+  --seg-bg: #E9E9E5;
+
+  /* Review states (semantic, separate from the accent) */
+  --ok: #2E8B57;      --ok-text: #1F6B40;   --ok-soft: rgba(46, 139, 87, .13);
+  --ok-auto: #9CCBAE; /* accepted by confidence (charts, dots); --ok is accepted by you */
+  --fix: #0E8A95;     --fix-text: #0B6B74;  --fix-soft: rgba(14, 138, 149, .12);
+  --add: #8A3FD1;     --add-text: #6E2DB0;  --add-soft: rgba(138, 63, 209, .11);
+  --warn: #C8620C;    --warn-text: #934607; --warn-soft: rgba(200, 98, 12, .13);
+  --warn-strong: #A8510A;
+  --danger: #B42318;
+  --neutral-soft: rgba(60, 64, 72, .08);
+  --chart: #5B79C9;
+
+  --shadow: 0 1px 2px rgba(20, 22, 28, .06), 0 4px 14px rgba(20, 22, 28, .07);
+  --shadow2: 0 10px 36px rgba(20, 22, 28, .18), 0 2px 6px rgba(20, 22, 28, .08);
+
+  /* Layers, lowest to highest. The toolbar (and its menus) sits above every
+     workspace overlay so Import and Export menus are never covered. */
+  --z-welcome: 10;
+  --z-stats: 20;
+  --z-drawer: 25;
+  --z-toolbar: 40;
+  --z-dialog: 60;
+  --z-toast: 80;
+  --z-tip: 90;
+
+  /* Written by ui/theme.js from settings */
+  --low-color: #D2691E;
+  --low-opacity: .6;
+  --text-size: 16px;
+  --cell-w: 10.2px;
+  --cell-h: 28px;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #101113;
+  --chrome: #16171A;
+  --panel: #1B1C20;
+  --panel2: #202125;
+  --line: #2A2C31;
+  --line2: #3A3C42;
+  --text: #ECEDEF;
+  --text2: #B3B6BC;
+  --text3: #969AA1;
+  --stage: #0B0C0E;
+  --scrim: rgba(0, 0, 0, .55);
+  --tip-bg: #ECEDEF;
+  --tip-fg: #16171A;
+
+  --accent: #7C9BFF;
+  --accent-text: #A3B8FF;
+  --on-accent: #0D1220;
+  --accent-soft: rgba(124, 155, 255, .12);
+  --accent-soft2: rgba(124, 155, 255, .22);
+  --hover: rgba(255, 255, 255, .07);
+  --row-hover: rgba(255, 255, 255, .03);
+  --seg-bg: #131417;
+
+  --ok: #55C584;      --ok-text: #7DD9A2;   --ok-soft: rgba(85, 197, 132, .15);
+  --ok-auto: #3D7354;
+  --fix: #3CC2CC;     --fix-text: #72D8DF;  --fix-soft: rgba(60, 194, 204, .14);
+  --add: #B98AF0;     --add-text: #CDA9F6;  --add-soft: rgba(185, 138, 240, .15);
+  --warn: #F09A4E;    --warn-text: #F5B27A; --warn-soft: rgba(240, 154, 78, .15);
+  --danger: #FF8A80;
+  --neutral-soft: rgba(255, 255, 255, .07);
+  --chart: #7C9BFF;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  --shadow2: 0 12px 40px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .35);
+
+  color-scheme: dark;
+}

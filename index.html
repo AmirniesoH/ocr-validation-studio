@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OCR Validation Studio</title>
+  <meta name="description" content="Validate and correct OCR text character by character against the original scanned pages.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 26 26%22%3E%3Crect x=%221%22 y=%221%22 width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%232B59C3%22/%3E%3Cpath d=%22M8 7h10M8 11h7M8 15h10M8 19h5%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/viewer.css">
+  <link rel="stylesheet" href="css/text.css">
+  <link rel="stylesheet" href="css/panels.css">
+  <link rel="stylesheet" href="css/overlays.css">
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar" id="toolbar"></header>
+    <div class="workspace">
+      <nav class="nav" id="nav" aria-label="Documents and pages"></nav>
+      <main class="main">
+        <section class="pane" id="viewer" aria-label="Original image"></section>
+        <div class="resizer" id="resizer"></div>
+        <section class="pane" id="text" aria-label="Digital text"></section>
+        <aside class="drawer" id="settings" hidden></aside>
+        <section class="stats" id="stats" hidden></section>
+        <div class="welcome" id="welcome"></div>
+      </main>
+    </div>
+    <footer class="statusbar" id="statusbar"></footer>
+  </div>
+  <div id="dialogs"></div>
+  <div id="toasts"></div>
+  <noscript><p style="padding:24px">OCR Validation Studio needs JavaScript.</p></noscript>
+
+  <!-- Module system first; after that the order does not matter (modules load on first use). -->
+  <script src="js/ovs.js"></script>
+
+  <script src="js/util/dom.js"></script>
+  <script src="js/util/format.js"></script>
+  <script src="js/util/async.js"></script>
+  <script src="js/util/files.js"></script>
+  <script src="js/util/vendor.js"></script>
+
+  <script src="js/model/review.js"></script>
+  <script src="js/model/geometry.js"></script>
+  <script src="js/model/page-index.js"></script>
+  <script src="js/model/layout.js"></script>
+  <script src="js/model/stats.js"></script>
+
+  <script src="js/core/event-bus.js"></script>
+  <script src="js/core/settings.js"></script>
+  <script src="js/core/history.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/commands.js"></script>
+
+  <script src="js/io/annotation-schema.js"></script>
+  <script src="js/io/annotation-format.js"></script>
+  <script src="js/io/annotation-sqlite.js"></script>
+  <script src="js/io/images.js"></script>
+  <script src="js/io/importer.js"></script>
+  <script src="js/io/export-text.js"></script>
+  <script src="js/io/export-data.js"></script>
+  <script src="js/io/exporters.js"></script>
+  <script src="js/io/save-all.js"></script>
+  <script src="js/io/autosave.js"></script>
+  <script src="js/io/sample.js"></script>
+
+  <script src="js/ui/icons.js"></script>
+  <script src="js/ui/labels.js"></script>
+  <script src="js/ui/controls.js"></script>
+  <script src="js/ui/tooltip.js"></script>
+  <script src="js/ui/side-panel.js"></script>
+  <script src="js/ui/file-drop.js"></script>
+  <script src="js/ui/choice-dialog.js"></script>
+  <script src="js/ui/toast.js"></script>
+  <script src="js/ui/theme.js"></script>
+  <script src="js/ui/export-menu.js"></script>
+  <script src="js/ui/toolbar.js"></script>
+  <script src="js/ui/nav-panel.js"></script>
+  <script src="js/ui/box-layer.js"></script>
+  <script src="js/ui/minimap.js"></script>
+  <script src="js/ui/viewer.js"></script>
+  <script src="js/ui/inline-editor.js"></script>
+  <script src="js/ui/text-panel.js"></script>
+  <script src="js/ui/loupe.js"></script>
+  <script src="js/ui/inspector.js"></script>
+  <script src="js/ui/settings-panel.js"></script>
+  <script src="js/ui/charts.js"></script>
+  <script src="js/ui/stats-view.js"></script>
+  <script src="js/ui/import-dialog.js"></script>
+  <script src="js/ui/shell.js"></script>
+  <script src="js/ui/shortcuts.js"></script>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

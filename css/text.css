@@ -1,0 +1,140 @@
+/* Digital text panel and character inspector.
+
+   Character classes (set in ui/text-panel.js):
+     .is-pending     below the threshold, not reviewed
+     .is-threshold   accepted by confidence (plain text)
+     .is-confirmed   accepted by the user unchanged (green)
+     .is-corrected   value changed by the user
+     .is-added       inserted by the user
+     .no-box         manually added, no box yet
+     .is-hover, .is-selected
+   Container switches on .tbody: .marks (status marks), .hl-low (pending
+   highlighting), .dim-on (dimming), .inserting, .no-gutter, and
+   data-filter, the active filter. */
+
+/* ---------- toolbar row ---------- */
+.tp-tools { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--panel); flex: none; }
+.tp-row { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+.thr { display: flex; align-items: center; gap: 9px; }
+.chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.chip {
+  appearance: none; border: 1px solid var(--line); background: var(--panel); color: var(--text2); height: 26px; padding: 0 9px; border-radius: 13px;
+  font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;
+}
+.chip:hover { border-color: var(--line2); color: var(--text); }
+.chip.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); }
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.chip .n { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+.chip.on .n { color: var(--accent-text); }
+.navm { display: flex; align-items: center; gap: 2px; }
+.navtxt { font-family: var(--font-mono); font-size: 11.5px; color: var(--text2); min-width: 60px; text-align: center; }
+
+/* ---------- text body ---------- */
+.tbody { flex: 1; overflow: auto; padding: 26px 8px 64px 0; position: relative; font-family: var(--font-mono); font-size: var(--text-size); }
+.tbody:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--accent-soft2); }
+.tempty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; color: var(--text2); font-family: var(--font-ui); font-size: 13px; text-align: center; padding: 24px; }
+.tempty .muted { max-width: 44ch; }
+.insbar { display: flex; align-items: center; gap: 8px; margin: -6px 12px 12px; padding: 7px 10px; border-radius: 8px; background: var(--add-soft); color: var(--add-text); font-family: var(--font-ui); font-size: 12.5px; }
+.insbar .lnk { margin-left: auto; }
+
+.row { display: flex; align-items: center; border-radius: 6px; padding-right: 44px; position: relative; width: max-content; min-width: 100%; min-height: var(--cell-h);
+  /* Lines out of view skip style, layout and paint until scrolled to (they stay searchable
+     and accessible): long pages restyle and repaint only what is on screen. */
+  content-visibility: auto; contain-intrinsic-size: auto 1px auto var(--cell-h); }
+/* That also clips a row to its box, so rows with a raised character (hover, selection, editor,
+   insertion; .lift is set in ui/text-panel.js) and every row in insert mode render normally. */
+.row.lift, .inserting .row { content-visibility: visible; }
+.row:hover { background: var(--row-hover); }
+.row.act { background: var(--accent-soft); }
+.row.para { margin-top: calc(var(--cell-h) * .45); }
+.gut { flex: none; width: 52px; display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding-right: 12px; font-size: 11px; color: var(--text3); user-select: none; }
+.no-gutter .gut { display: none; }
+.lnst { width: 6px; height: 6px; border-radius: 50%; flex: none; background: var(--warn); }
+.lnst.partial { background: var(--accent); }
+.lnst.done { background: var(--ok); }
+.line-chars { display: flex; align-items: center; }
+.row[dir="rtl"] .line-chars { flex-direction: row-reverse; }
+.indent { flex: none; display: inline-block; }
+.row-act {
+  appearance: none; position: absolute; right: 8px; top: 50%; margin-top: -12px; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line2);
+  background: var(--panel); color: var(--ok-text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; padding: 0;
+}
+.row:hover .row-act, .row-act:focus-visible { opacity: 1; }
+
+/* ---------- character cells ---------- */
+.cell { position: relative; flex: none; display: inline-flex; width: var(--cell-w); height: var(--cell-h); }
+.cell.editing { width: calc(var(--cell-w) + 6px); margin: 0 1px; }
+.cell.space .spc { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--line2); font-size: .7em; user-select: none; }
+.ch {
+  appearance: none; border: 0; margin: 0; padding: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  background: transparent; font: inherit; color: var(--text); border-radius: 3px; cursor: text; position: relative; white-space: pre;
+  transition: background-color .08s; /* not transform: animating it re-layers the panel on every hover */
+}
+.ch:hover { background: var(--hover); }
+.ch:focus-visible { outline-offset: -1px; }
+
+.hl-low .ch.is-pending { color: var(--low-color); opacity: var(--low-opacity); }
+.hl-low .ch.is-pending::after { content: ''; position: absolute; left: 14%; right: 14%; bottom: 2px; border-bottom: 2px dotted currentColor; opacity: .9; }
+.marks .ch.is-confirmed { color: var(--ok-text); background: var(--ok-soft); }
+.marks .ch.is-corrected { color: var(--fix-text); background: var(--fix-soft); }
+.marks .ch.is-corrected::before { content: ''; position: absolute; top: 2px; right: 1px; width: 4px; height: 4px; border-radius: 50%; background: var(--fix); }
+.marks .ch.is-added { color: var(--add-text); background: var(--add-soft); outline: 1px dashed var(--add); outline-offset: -1px; }
+.marks .ch.is-added.no-box::before { content: ''; position: absolute; top: 2px; right: 2px; width: 4px; height: 4px; border: 1px solid var(--add); border-radius: 1px; }
+/* Dimming for the active filter (.dim-on[data-filter]) is generated from review.FILTERS in js/ui/text-panel.js. */
+.ch.is-selected { box-shadow: inset 0 0 0 1.5px var(--accent); opacity: 1 !important; }
+.ch.is-hover { background: var(--accent-soft2) !important; box-shadow: inset 0 0 0 1.5px var(--accent), 0 3px 8px rgba(0, 0, 0, .14); transform: translateY(-1px); z-index: 3; opacity: 1 !important; }
+
+.pill {
+  position: absolute; bottom: calc(100% + 7px); left: 50%; transform: translateX(-50%); padding: 2px 6px; border-radius: 5px; background: var(--tip-bg); color: var(--tip-fg);
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500; line-height: 1.35; white-space: nowrap; pointer-events: none; z-index: 20; box-shadow: var(--shadow);
+}
+.pill::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -4px; border: 4px solid transparent; border-top-color: var(--tip-bg); }
+.pill.low { background: var(--warn-strong); color: #fff; }
+.pill.low::after { border-top-color: var(--warn-strong); }
+.pill.na { background: var(--add); color: #fff; }
+.pill.na::after { border-top-color: var(--add); }
+
+/* ---------- inline editor ---------- */
+.ch-input {
+  width: 100%; height: 100%; border: 0; outline: 2px solid var(--accent); outline-offset: 0; border-radius: 3px; background: var(--panel); color: var(--text);
+  font: inherit; text-align: center; padding: 0; box-shadow: 0 0 0 5px var(--accent-soft2), 0 6px 16px rgba(0, 0, 0, .18); caret-color: var(--accent); position: relative; z-index: 12;
+}
+.ch-input.new { outline-color: var(--add); box-shadow: 0 0 0 5px var(--add-soft), 0 6px 16px rgba(0, 0, 0, .18); caret-color: var(--add); }
+
+/* ---------- insertion points ---------- */
+.ins { appearance: none; position: absolute; left: -5px; top: 0; bottom: 0; width: 10px; z-index: 4; border: 0; background: transparent; cursor: copy; padding: 0; display: none; }
+.inserting .ins { display: block; }
+.ins::before { content: ''; position: absolute; left: 4px; top: 3px; bottom: 3px; width: 2px; border-radius: 1px; background: var(--add); opacity: .22; }
+.ins:hover::before, .ins:focus-visible::before { opacity: 1; }
+.ins:hover::after { content: '+'; position: absolute; top: -13px; left: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--add); color: #fff; font-size: 11px; line-height: 14px; text-align: center; font-family: var(--font-ui); font-weight: 600; }
+.ins-end { appearance: none; margin: 0 4px; width: 20px; height: 20px; border-radius: 50%; border: 1px dashed var(--add); background: transparent; color: var(--add-text); font-size: 13px; line-height: 1; cursor: copy; padding: 0; flex: none; display: none; }
+.inserting .ins-end { display: inline-block; }
+.ins-end:hover { background: var(--add-soft); }
+
+/* ---------- inspector ---------- */
+/* A fixed height (that of a character's details): the inspector never grows or shrinks as the
+   pointer moves, so the text above it never jumps out from under the pointer. Taller content
+   (a very narrow pane) scrolls inside. */
+.insp { flex: none; box-sizing: border-box; height: 235px; overflow-y: auto; border-top: 1px solid var(--line); background: var(--panel2); display: flex; gap: 16px; padding: 12px 14px; align-items: flex-start; flex-wrap: wrap; }
+/* 132px = LOUPE_SIZE in ui/loupe.js */
+.loupe { flex: none; width: 132px; height: 132px; border-radius: 9px; overflow: hidden; position: relative; background: #E8E2D4; border: 1px solid var(--line2); }
+.loupe canvas { display: block; }
+.loupe.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: var(--panel); border-style: dashed; font-size: 11.5px; color: var(--text3); text-align: center; padding: 8px; }
+.loupe-cap { position: absolute; left: 6px; bottom: 6px; font-size: 10px; background: rgba(20, 20, 20, .66); color: #fff; padding: 1px 5px; border-radius: 4px; font-family: var(--font-mono); }
+.glyphcol { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 76px; }
+.glyph { width: 76px; height: 76px; border-radius: 9px; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 500; color: var(--text); font-family: var(--font-mono); }
+.detected { font-size: 11.5px; color: var(--text3); display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+.detected .was { font-family: var(--font-mono); font-size: 14px; color: var(--text); min-width: 22px; height: 22px; padding: 0 4px; border-radius: 5px; border: 1px solid var(--line); background: var(--panel); display: inline-flex; align-items: center; justify-content: center; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 14px; font-size: 12px; margin: 0; align-content: start; flex: 1 1 210px; min-width: 0; }
+.kv dt { color: var(--text3); white-space: nowrap; }
+.kv dd { margin: 0; color: var(--text); display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; min-width: 0; }
+.meter { height: 6px; border-radius: 3px; background: var(--line); position: relative; width: 120px; flex: none; }
+.meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.meter b { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--text); border-radius: 1px; }
+.iacts { display: grid; grid-template-columns: repeat(3, minmax(0, auto)); gap: 6px; align-content: start; flex: none; }
+.iacts .btn { justify-content: flex-start; }
+.iacts kbd { margin-left: auto; }
+.iempty { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; color: var(--text2); font-size: 12.5px; width: 100%; }
+.iempty-text { flex: 1 1 220px; min-width: 0; }
+.iempty h5 { margin: 0 0 4px; font-size: 13px; color: var(--text); font-weight: 600; }
+.keys { display: grid; grid-template-columns: auto auto; gap: 6px 12px; font-size: 12px; align-items: center; }

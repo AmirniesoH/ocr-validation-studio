@@ -1,0 +1,26 @@
+{
+ "pages": [
+  {
+   "image": "page_001.jpg",
+   "lines": [
+    {
+     "characters": [
+      {"text": "H", "conf": 0.98, "bbox": [120, 80, 150, 120]},
+      {"text": "i", "conf": 0.42, "bbox": [154, 80, 166, 120]}
+     ]
+    }
+   ]
+  },
+  {
+   "image": "page_002.jpg",
+   "lines": [
+    {
+     "characters": [
+      {"text": "O", "conf": 0.91, "bbox": [100, 60, 132, 100]},
+      {"text": "k", "conf": 0.88, "bbox": [136, 60, 160, 100]}
+     ]
+    }
+   ]
+  }
+ ]
+}
