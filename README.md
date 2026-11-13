@@ -9,7 +9,7 @@
 
 **Check OCR text against the original scan, character by character, right in your browser.**
 
-[**▶ Live demo**](https://AmirniesoH.github.io/ocr-validation-studio/) · [**User Guide**](USER_GUIDE.md) · [Examples](examples/) · [Developer guide](docs/DEVELOPER_GUIDE.md)
+[**▶ Live demo**](https://amirniesoh.github.io/ocr-validation-studio/) · [**User Guide**](USER_GUIDE.md) · [Examples](examples/) · [Developer guide](docs/DEVELOPER_GUIDE.md)
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
@@ -91,7 +91,7 @@ Stamps and seals are read along their own direction and shown straightened in th
 
 ### Online
 
-Open the **[live demo](https://AmirniesoH.github.io/ocr-validation-studio/)** and click **Try with sample documents**. Four practice pages load with realistic OCR mistakes, nothing is uploaded, and nothing you do there is kept.
+Open the **[live demo](https://amirniesoh.github.io/ocr-validation-studio/)** and click **Try with sample documents**. Four practice pages load with realistic OCR mistakes, nothing is uploaded, and nothing you do there is kept.
 
 ### On your own computer
 
